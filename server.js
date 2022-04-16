@@ -9,7 +9,7 @@ const studentModel = require("./models/studentModel");
 
 const port = process.env.client_port || 8430;
 
-const mongoURI = process.env.mongoURI || `mongodb://localhost:27017/material-table`
+const mongoURI = process.env.mongoURI || `mongodb+srv://aks:aksDB22@cluster0.pjuwb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
 mongoose.connect(mongoURI);
 
 // middlewares
