@@ -20,7 +20,7 @@ app.use(express.json())
 
 
 app.get('/', (req, res) => {
-    res.status(200).send("<h1>Welcome to NodeJS-Express Backend Server<h1>")
+    return res.status(200).send("<h1>Welcome to NodeJS-Express Backend Server<h1>")
 })
 
 app.post('/find', async (req, res) => {
@@ -46,7 +46,7 @@ app.post('/find', async (req, res) => {
     })
     console.log(data);
 
-    res.status(200).json({ data });
+    return res.status(200).json({ data });
 })
 
 
@@ -70,7 +70,11 @@ app.post('/students', async (req, res) => {
     student.speak();
 
     let data = { msg: 'register Success', firstName, success: true }
-    res.status(200).json(data)
+    return res.status(200).json(data)
+})
+
+app.all('/', (req, res) => {
+    return res.status.send(`<h1>!!Nothing at this Route!!<h1>`)
 })
 
 app.listen(port, () => {
