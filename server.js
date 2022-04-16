@@ -1,19 +1,14 @@
-const morgan = require('morgan')
-require('dotenv').config()
-
-const mongoose = require('mongoose');
-// const salaryModel = require("./models/report");
-
 const express = require("express");
-const userRouter = require('./routes/_users')
-const reportRouter = require('./routes/_report')
+const morgan = require('morgan')
+const mongoose = require('mongoose');
+require('dotenv').config()
 
 const app = express();
 const cors = require('cors');
+const studentModel = require("./models/studentModel");
 
 const port = process.env.client_port || 8430;
 
-//mongoDB
 const mongoURI = process.env.mongoURI || `mongodb://localhost:27017/material-table`
 mongoose.connect(mongoURI);
 
@@ -22,14 +17,61 @@ app.use(morgan('dev'))
 app.use(cors());
 app.use(express.json())
 
-//middleware for routes => ./routes
-app.use('/users', userRouter)
-app.use('/report', reportRouter)
+
 
 app.get('/', (req, res) => {
     res.status(200).send("<h1>Welcome to NodeJS-Express Backend Server<h1>")
 })
 
+app.post('/find', async (req, res) => {
+    param = req.body;
+    console.log(param);
+    let data = await studentModel.find(param);
+    if (!data) {
+        // i.e. data not found in employeeData
+        return res.status(404).json({
+            msg: `No data, ${param}`
+        })
+    }
+
+    data = data.map((item) => {
+        item = {
+            id: item.id,
+            firstName: item.firstName,
+            lastName: item.lastName,
+            cgpa: item.cgpa,
+            year: item.year,
+        }
+        return item;
+    })
+    console.log(data);
+
+    res.status(200).json({ data });
+})
+
+
+app.post('/students', async (req, res) => {
+    const { firstName, lastName, cgpa, id, year } = req.body;
+    console.log(req.body);
+
+    let student = await studentModel.findOne({ id });
+    if (student) {
+        console.log(student);
+        return res.status(500).json({
+            msg: `User with username: ${id} already exist`,
+            success: false,
+        })
+    }
+
+    student = new studentModel({
+        firstName, lastName, cgpa, year, id
+    });
+    await student.save();
+    student.speak();
+
+    let data = { msg: 'register Success', firstName, success: true }
+    res.status(200).json(data)
+})
 
 app.listen(port, () => {
     console.log(`server live in http://localhost:${port}`)
