@@ -7,7 +7,7 @@ const app = express();
 const cors = require('cors');
 const studentModel = require("./models/studentModel");
 
-const port = process.env.client_port || 8430;
+const port = process.env.PORT || 8430;
 
 const mongoURI = process.env.mongoURI || `mongodb+srv://aks:aksDB22@cluster0.pjuwb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
 mongoose.connect(mongoURI);
